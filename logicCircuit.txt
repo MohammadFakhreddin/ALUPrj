@@ -1,0 +1,129 @@
+
+library ieee;
+use ieee.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_signed.all;
+
+entity logic_circuit is
+	port(
+		a : in std_logic_vector (7 downto 0);
+		b : in std_logic_vector (7 downto 0);
+		order : in std_logic_vector(1 downto 0);
+		clk : in std_logic;
+		output : inout std_logic_vector (7 downto 0)
+--	  enable : in std_logic
+  );
+
+end logic_circuit;
+
+architecture logic_circuit of logic_circuit is
+ 
+  component divider is
+	port(
+		a : in std_logic_vector (7 downto 0);
+		b : in std_logic_vector (7 downto 0);
+		clk : in std_logic;
+		output : inout std_logic_vector (7 downto 0)
+  );
+  end component divider;
+  component completeadder is
+  port( 
+    a : in std_logic_vector (7 downto 0);
+    b : in std_logic_vector (7 downto 0);
+    cout : out std_logic;
+    s : out std_logic_vector(7 downto 0)
+  );
+  end component completeadder;
+	component completesubadder is
+  port( 
+    a : in std_logic_vector (7 downto 0);
+    b : in std_logic_vector (7 downto 0);
+    borrow : out std_logic;
+    s : out std_logic_vector(7 downto 0)
+  );
+  end component completesubadder;
+  component multiplier is
+	port(
+		a : in std_logic_vector (7 downto 0);
+		b : in std_logic_vector (7 downto 0);
+		output : out std_logic_vector (15 downto 0)
+	);
+  end component multiplier;
+  
+  signal div_a : std_logic_vector (7 downto 0);
+	signal	div_b : std_logic_vector (7 downto 0);
+	signal div_out : std_logic_vector (7 downto 0);
+
+  signal add_a : std_logic_vector (7 downto 0);
+  signal add_b : std_logic_vector (7 downto 0);
+  signal add_cout : std_logic;
+  signal add_s : std_logic_vector(7 downto 0);
+  
+  signal sub_a : std_logic_vector (7 downto 0);
+  signal sub_b : std_logic_vector (7 downto 0);
+  signal sub_bo : std_logic;
+  signal sub_s : std_logic_vector(7 downto 0);
+  
+  signal	mult_a : std_logic_vector (7 downto 0);
+	signal mult_b : std_logic_vector (7 downto 0);
+	signal	mult_out : std_logic_vector (15 downto 0);
+begin
+	adder0: completeadder PORT MAP (
+	    a => add_a, 
+	   	b => add_b,
+	   	s => add_S,
+	    cout => add_cout
+	);
+	mult0: multiplier port map (
+	   a=>mult_a,
+	   b=>mult_b,
+	   output=>mult_out
+	);
+  sub0 : completesubadder port map
+  (
+    a => sub_a,
+    b => sub_b,
+    borrow => sub_bo,
+    s => sub_s
+  );  
+  div0 : divider port map
+  (
+   	a => div_a,
+		b => div_b,
+		clk => clk,
+		output => div_out
+	 );
+   
+   add_a<=a;
+   add_b<=b;
+   
+   mult_a<=a;
+   mult_b<=b;
+   
+   sub_a<=a;
+   sub_b<=b;
+   
+   div_a<=a;
+   div_b<=b;
+
+  clkProcess : process (clk,order)
+  begin
+     case order is 
+      when "00" =>
+        output<=add_s;
+      when "01" =>
+        output<=sub_s;
+      when "10" =>
+        output<=mult_out(10 DOWNTO 3);
+      when "11" =>
+        output<=div_out;
+      when others=>        
+    end case;     
+  end process clkProcess;
+
+end logic_circuit;
+
+
+
+
+

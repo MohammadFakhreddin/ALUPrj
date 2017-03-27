@@ -1,0 +1,64 @@
+
+-- data_array.vhdl created on 2:1  2016.2.27
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_unsigned.all;
+
+entity completeadder is
+  port( 
+    a : in std_logic_vector (7 downto 0);
+    b : in std_logic_vector (7 downto 0);
+    cout : out std_logic;
+    s : out std_logic_vector(7 downto 0)
+  );
+end entity completeadder;
+architecture completeadder of completeadder is 
+  component claadder is
+    port( 
+      a : in std_logic_vector (3 downto 0);
+      b : in std_logic_vector (3 downto 0);
+      cin : in std_logic;
+      cout : out std_logic;
+      s : out std_logic_vector(3 downto 0)
+    );
+  end component claadder;
+   signal cla_a1 : std_logic_vector (3 downto 0);
+   signal cla_b1 : std_logic_vector (3 downto 0);
+   signal cla_cin1 : std_logic;
+   signal cla_cout1 : std_logic;
+   signal cla_s1 : std_logic_vector(3 downto 0);
+   signal cla_a2 : std_logic_vector (3 downto 0);
+   signal cla_b2 : std_logic_vector (3 downto 0);
+   signal cla_cin2 : std_logic;
+   signal cla_cout2 : std_logic;
+   signal cla_s2 : std_logic_vector(3 downto 0);
+begin
+    claadder1 : claadder port map (
+      a => cla_a1,
+      b => cla_b1,
+      cin => cla_cin1,
+      cout => cla_cout1,
+      s => cla_s1
+   );
+   claadder2 : claadder port map (
+      a => cla_a2,
+      b => cla_b2,
+      cin => cla_cin2,
+      cout => cla_cout2,
+      s => cla_s2
+   );
+   cla_a1<=a(3 downto 0);
+   cla_a2<=a(7 downto 4);
+   cla_b1<=b(3 downto 0);
+   cla_b2<=b(7 downto 4);
+   cla_cin1<='0';
+   cla_cin2<=cla_cout1;
+   s(3 downto 0) <= cla_s1(3 downto 0);
+   s(7 downto 4) <= cla_s2(3 downto 0);
+   cout<=cla_cout2;
+end architecture completeadder;
+
+
+
+

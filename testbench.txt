@@ -1,0 +1,287 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_unsigned.all;
+
+entity aluTestBench is
+end entity aluTestBench;
+  
+architecture aluTestBench of aluTestBench is 
+component control_circuit is
+  port( 
+    a : in std_logic_vector (7 downto 0);
+    b : in std_logic_vector (7 downto 0);
+    clk : in std_logic;
+    order : in std_logic_vector(2 downto 0);
+    output : out std_logic_vector(7 downto 0)
+  );
+end component control_circuit;
+  signal a : std_logic_vector(7 downto 0);
+  signal b : std_logic_vector(7 downto 0);
+  signal clk : std_logic;
+  signal order : std_logic_vector(2 downto 0);
+  signal output : std_logic_vector(7 downto 0);
+begin
+  
+   arth0 : control_circuit port map (
+      a => a,
+      b => b,
+      clk => clk,
+      order => order,
+      output => output 
+   );
+   
+   sin_proc : process
+   begin
+     clk<='0';
+     wait for 5ns;
+     order<="000";
+     a<="00000100";
+     b<="00000010";
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+     order<="001";
+     a<="00000100";
+     b<="00000010";
+     clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+     order<="010";
+     a<="00000100";
+     b<="00000010";
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+        clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+     order<="100";
+     a<="00000100";
+     b<="00000010";
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+     order<="101";
+     a<="00000100";
+     b<="00000010";
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+     order<="110";
+     a<="00000100";
+     b<="00000010";
+     clk<='1';
+     wait for 5ns;
+     clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+     order<="111";
+     a<="00000100";
+     b<="00000010";
+     clk<='1';
+     wait for 5ns;
+     clk<='0';
+     wait for 5ns;
+        clk<='1';
+     wait for 5ns;
+      clk<='0';
+     wait for 5ns;
+     order<="011";
+     a<="00000101";
+     b<="00000010";
+     clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+        clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+        clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+        clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+    clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+        clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+        clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+        clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+    clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+      clk<='1';
+     wait for 5ns;
+        clk<='0';
+     wait for 5ns;
+   end process;
+  
+  
+end architecture aluTestBench;
+
+
+
+
+
+
+
+

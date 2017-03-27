@@ -1,0 +1,191 @@
+
+library ieee;
+use ieee.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_signed.all;
+
+entity divider is
+	port(
+		a : in std_logic_vector (7 downto 0);
+		b : in std_logic_vector (7 downto 0);
+		clk : in std_logic;
+		output : inout std_logic_vector (7 downto 0)
+--	  enable : in std_logic
+  );
+
+end divider;
+
+architecture divider of divider is
+ 
+	component claadder is
+   port( 
+    a : in std_logic_vector (3 downto 0);
+    b : in std_logic_vector (3 downto 0);
+    cin : in std_logic;
+    cout : out std_logic;
+    s : out std_logic_vector(3 downto 0)
+  );
+  end component claadder;
+  component multiplier is
+	port(
+		a : in std_logic_vector (7 downto 0);
+		b : in std_logic_vector (7 downto 0);
+		output : out std_logic_vector (15 downto 0)
+	);
+  end component multiplier;
+  component subadder is
+  port( 
+    a : in std_logic_vector (3 downto 0);
+    b : in std_logic_vector (3 downto 0);
+    borrow_in : in std_logic;
+    borrow_out : out std_logic;
+    s : out std_logic_vector(3 downto 0)
+  );
+end component subadder;
+  type statetype is (ready,add,sub,start,shift,decision);
+  signal state : statetype;
+  --signal temp : in std_logic_vector(4 downto 0);
+  signal mul_a :std_logic_vector (7 downto 0);
+  signal mul_b :std_logic_vector (7 downto 0);
+  signal mul_output :std_logic_vector(15 downto 0);
+  signal add_a :std_logic_vector (3 downto 0);
+  signal add_b :std_logic_vector (3 downto 0);
+  signal add_cout :std_logic;
+  signal add_cin :std_logic;
+  signal add_s :std_logic_vector(3 downto 0);
+  signal sub_a :std_logic_vector (3 downto 0);
+  signal sub_b :std_logic_vector (3 downto 0);
+  signal sub_borrow_in :std_logic;
+  signal sub_borrow_out :std_logic;
+  signal sub_s :std_logic_vector(3 downto 0);
+  signal c : integer;
+  signal temp :  std_logic_vector(4 downto 0); 
+  signal last_a : std_logic_vector(7 downto 0);
+  signal last_b : std_logic_vector(7 downto 0);
+begin
+	
+	adder0: claadder PORT MAP (
+	    a => add_a, 
+	   	b => add_b,
+	   	s => add_S,
+	   	cin=>add_cin,
+	    cout => add_cout
+	);
+	mult0: multiplier port map (
+	   a=>mul_a,
+	   b=>mul_b,
+	   output=>mul_output
+	);
+  sub0 : subadder port map
+  (
+    a => sub_a,
+    b => sub_b,
+    borrow_out => sub_borrow_out,
+    s => sub_s,
+    borrow_in=>sub_borrow_in
+  );  
+    
+    clkProc : process (clk)
+    
+    --variable brem : std_logic_vector(4 downto 0);
+    --variable c : integer;
+    -- variable temp :  std_logic_vector(4 downto 0); 
+
+    begin
+      if(rising_edge(clk)) then
+      --  if(enable='1') then
+          case state is
+            when ready=>
+              if(a/=last_a or b/=last_b) then
+              --temp(7) <='0';-- a(7);
+              --temp(6) <='0';-- a(6);
+              --temp(5) <='0';-- a(5);
+              temp(4) <='0';-- a(4);
+              temp(3) <='0';-- a(3);
+              temp(2) <= '0';--a(2);
+              temp(1) <= '0';--a(1);
+              temp(0) <='0';-- a(0);
+              --temp(8)<='0';
+              c<=0;
+              state<=start;
+              last_a<=a;
+              last_b<=b;
+              end if;
+            when start=>
+              if(c=8) then
+                state<=ready;
+                output(7) <= output(3);
+                output(6) <= output(2);
+                output(5) <= output(1);
+                output(4) <= output(0);
+                output(3) <= temp(3);
+                output(2) <= temp(2);
+                output(1) <= temp(1);
+                output(0) <= temp(0);
+              else
+              temp(3 downto 1) <= temp(2 downto 0);
+              temp(0)<=a(7-c);
+              state<=shift;
+              end if;
+            when shift=>
+              sub_borrow_in<='0';
+             	sub_a <= temp(3 downto 0);
+              sub_b <= b(3 downto 0);
+              state<=sub;
+            when add=>
+              --temp(11 downto 8) := add_s(3 downto 0);
+              --temp(12):=add_cout;
+              temp(3 downto 0) <= add_s(3 downto 0);
+              temp(4)<=temp(4) xor add_cout;
+              state<=start;
+            when sub=>          
+              temp(3 downto 0) <= sub_s(3 downto 0);
+              temp(4) <= sub_borrow_out xor temp(4);
+              state<=decision;
+            when decision=>
+              if(temp(4)='1') then
+              add_cin<='0';
+              add_a <= sub_s(3 downto 0);
+              add_b <= b(3 downto 0);
+              state<=add;
+              output(7-c)<='0';
+              elsif(temp(4) ='0') then
+              output(7-c)<='1';
+              state<=start;
+            --  temp(4)<=sub_borrow_out;
+            
+          	 --  sub_borrow_out
+            end if;
+            c <= c+1;
+      --      temp(4)<='0';
+            when others=>
+              state<=ready;
+              c<=0;
+          end case; 
+          
+         -- for i in 0 to 7 loop
+--              temp(12 downto 1) := temp(11 downto 0);
+--              temp(0):='0';
+--              sub_borrow_in<='0';
+--             	sub_a <= temp(11 downto 8);
+--              sub_b <= b(3 downto 0);
+--              temp(11 downto 8) := sub_s(3 downto 0);
+--              temp(12) := sub_borrow_out;
+--             -- c:= conv_integer(temp(12 downto 8))-conv_integer(b(3 downto 0));
+--              --temp(12 downto 8) := std_logic_vector(signed(c,5));
+--              --temp(12 downto 8) := temp(12 downto 8) - (brem(4 downto 0)); 
+--            
+--          end loop;
+--          output(3) <= temp(11);
+--          output(2) <= temp(10);
+--          output(1) <= temp(9);
+--          output(0) <= temp(8);
+          --output(3 downto 0)<=temp(11 downto 8);
+      --  end if;
+      end if;
+    end process clkProc;
+	
+end divider;
+
+
+

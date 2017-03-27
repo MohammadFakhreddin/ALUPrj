@@ -1,0 +1,63 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_unsigned.all;
+
+entity completesubadder is
+  port( 
+    a : in std_logic_vector (7 downto 0);
+    b : in std_logic_vector (7 downto 0);
+    borrow : out std_logic;
+    s : out std_logic_vector(7 downto 0)
+  );
+end entity completesubadder;
+architecture completesubadder of completesubadder is 
+  component subadder is
+    port( 
+      a : in std_logic_vector (3 downto 0);
+      b : in std_logic_vector (3 downto 0);
+      borrow_in : in std_logic;
+      borrow_out : out std_logic;
+      s : out std_logic_vector(3 downto 0)
+    );
+  end component subadder;
+   signal sub_a1 : std_logic_vector (3 downto 0);
+   signal sub_b1 : std_logic_vector (3 downto 0);
+   signal sub_bin1 : std_logic;
+   signal sub_bout1 : std_logic;
+   signal sub_s1 : std_logic_vector(3 downto 0);
+   signal sub_a2 : std_logic_vector (3 downto 0);
+   signal sub_b2 : std_logic_vector (3 downto 0);
+   signal sub_bin2 : std_logic;
+   signal sub_bout2 : std_logic;
+   signal sub_s2 : std_logic_vector(3 downto 0);
+begin
+    subadder1 : subadder port map (
+      a => sub_a1,
+      b => sub_b1,
+      borrow_in => sub_bin1,
+      borrow_out => sub_bout1,
+      s => sub_s1
+   );
+   subadder2 : subadder port map (
+      a => sub_a2,
+      b => sub_b2,
+      borrow_in => sub_bin2,
+      borrow_out => sub_bout2,
+      s => sub_s2
+   );
+   sub_a1<=a(3 downto 0);
+   sub_a2<=a(7 downto 4);
+   sub_b1<=b(3 downto 0);
+   sub_b2<=b(7 downto 4);
+   sub_bin1<='0';
+   sub_bin2<=sub_bout1;
+   s(3 downto 0) <= sub_s1(3 downto 0);
+   s(7 downto 4) <= sub_s2(3 downto 0);
+   borrow<=sub_bout2;
+end architecture completesubadder;
+
+
+
+
+

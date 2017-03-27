@@ -1,0 +1,46 @@
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_unsigned.all;
+
+entity subadder is
+  port( 
+    a : in std_logic_vector (3 downto 0);
+    b : in std_logic_vector (3 downto 0);
+    borrow_in : in std_logic;
+    borrow_out : out std_logic;
+    s : out std_logic_vector(3 downto 0)
+  );
+end entity subadder;
+architecture subadder of subadder is 
+  signal g : std_logic_vector(3 downto 0);
+  signal p : std_logic_vector(3 downto 0);
+  signal c : std_logic_vector(3 downto 0);
+begin
+
+	 g(0) <= (not(a(0))) and b(0);
+	 p(0) <= (not(a(0))) or b(0);
+	 g(1) <= (not(a(1))) and b(1);
+	 p(1) <= (not(a(1))) or b(1);
+	 g(2) <= (not(a(2))) and b(2);
+	 p(2) <= (not(a(2))) or b(2);
+	 g(3) <= (not(a(3))) and b(3);
+	 p(3) <= (not(a(3))) or b(3);
+	 
+	 c(0) <= borrow_in;
+	 c(1) <= g(0) or (p(0) and c(0));
+	 c(2) <= g(1) or (p(1) and  g(0)) or (p(1) and p(0) and c(0));
+	 c(3) <= g(2) or (p(2) and g(1)) or (p(2) and p(1) and g(0)) or ( p(2) and  p(1) and p(0) and c(0));
+	 borrow_out <= g(3) or (p(3) and g(2)) or (p(3) and p(2) and g(1)) or (p(3) and p(2) and p(1) and g(0)) or 
+	 (p(3) and p(2) and p(1) and p(0) and c(0));
+   
+   s(0) <= c(0) xor (a(0) xor b(0));    
+   s(1) <= c(1) xor (a(1) xor b(1));
+   s(2) <= c(2) xor (a(2) xor b(2));
+   s(3) <= c(3) xor (a(3) xor b(3));
+
+end architecture subadder;
+
+
+

@@ -1,0 +1,91 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_unsigned.all;
+
+entity control_circuit is
+  port( 
+    a : in std_logic_vector (7 downto 0);
+    b : in std_logic_vector (7 downto 0);
+    clk : in std_logic;
+    order : in std_logic_vector(2 downto 0);
+    output : out std_logic_vector(7 downto 0)
+  );
+end entity control_circuit;
+  
+architecture control_circuit of control_circuit is 
+component arthCal is
+  port( 
+    a : in std_logic_vector (7 downto 0);
+    b : in std_logic_vector (7 downto 0);
+    clk : in std_logic;
+    order : in std_logic_vector(1 downto 0);
+    output : out std_logic_vector(7 downto 0)
+  );
+end component arthCal;
+component logic_circuit is
+	port(
+		a : in std_logic_vector (7 downto 0);
+		b : in std_logic_vector (7 downto 0);
+		order : in std_logic_vector(1 downto 0);
+		clk : in std_logic;
+		output : inout std_logic_vector (7 downto 0)
+	--  enable : in std_logic
+  );
+end component logic_circuit;
+
+signal arth_a : std_logic_vector (7 downto 0);
+signal arth_b : std_logic_vector (7 downto 0);
+signal arth_order : std_logic_vector(1 downto 0);
+signal arth_output : std_logic_vector(7 downto 0);
+
+signal logic_a : std_logic_vector (7 downto 0);
+signal logic_b : std_logic_vector (7 downto 0);
+signal logic_order : std_logic_vector(1 downto 0);
+signal logic_output : std_logic_vector (7 downto 0);
+--signal enable : in std_logic
+begin
+  
+   arth0 : arthCal port map (
+      a => arth_a,
+      b => arth_b,
+      clk => clk,
+      order => arth_order,
+      output => arth_output 
+   );
+ 
+   logic0 : logic_circuit port map (
+		  a => logic_a,
+		  b => logic_b,
+		  order => logic_order,
+		  clk => clk,
+		  output => logic_output
+   );
+  
+  arth_a<=a;
+  arth_b<=b;
+  arth_order<=order(1 downto 0);
+  
+  logic_a<=a;
+  logic_b<=b;
+  logic_order<=order(1 downto 0);
+  
+  clkProcess : process (clk,order,a,b)
+  begin
+     case order(2) is 
+      when '1' =>
+        output<=arth_output;
+      when '0' =>
+        output<=logic_output;
+      when others=>
+    end case ;
+  end process clkProcess;
+  
+end architecture control_circuit;
+
+
+
+
+
+
+

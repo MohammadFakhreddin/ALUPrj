@@ -1,0 +1,81 @@
+
+
+-- data_array.vhdl created on 2:1  2016.2.27
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+use ieee.std_logic_unsigned.all;
+
+entity arthCal is
+  port( 
+    a : in std_logic_vector (7 downto 0);
+    b : in std_logic_vector (7 downto 0);
+    clk : in std_logic;
+    order : in std_logic_vector(1 downto 0);
+    output : out std_logic_vector(7 downto 0)
+  );
+end entity arthCal;
+  
+architecture arthCal of arthCal is 
+  signal or_out : std_logic_vector(7 downto 0);
+  signal and_out : std_logic_vector(7 downto 0);
+  signal shl_out : std_logic_vector(7 downto 0);
+  signal shar_out : std_logic_vector(7 downto 0);
+begin
+    or_out(0) <= a(0) or b(0); 
+    or_out(1) <= a(1) or b(1); 
+    or_out(2) <= a(2) or b(2); 
+    or_out(3) <= a(3) or b(3); 
+    or_out(4) <= a(4) or b(4); 
+    or_out(5) <= a(5) or b(5); 
+    or_out(6) <= a(6) or b(6); 
+    or_out(7) <= a(7) or b(7); 
+    
+    and_out(0) <= a(0) and b(0); 
+    and_out(1) <= a(1) and b(1); 
+    and_out(2) <= a(2) and b(2); 
+    and_out(3) <= a(3) and b(3); 
+    and_out(4) <= a(4) and b(4); 
+    and_out(5) <= a(5) and b(5); 
+    and_out(6) <= a(6) and b(6); 
+    and_out(7) <= a(7) and b(7); 
+    
+    shl_out(0) <= '0' ; 
+    shl_out(1) <= a(0) ; 
+    shl_out(2) <= a(1) ; 
+    shl_out(3) <= a(2) ; 
+    shl_out(4) <= a(3) ; 
+    shl_out(5) <= a(4) ; 
+    shl_out(6) <= a(5) ; 
+    shl_out(7) <= a(6) ; 
+    
+    shar_out(0) <= a(1) ; 
+    shar_out(1) <= a(2) ; 
+    shar_out(2) <= a(3) ; 
+    shar_out(3) <= a(4) ; 
+    shar_out(4) <= a(5) ; 
+    shar_out(5) <= a(6) ; 
+    shar_out(6) <= a(7) ; 
+    shar_out(7) <= a(7) ; 
+     
+  ordProc : process (clk)
+  begin
+    case order is 
+      when "00" =>
+        output<=and_out;
+      when "01" =>
+        output<=or_out;
+      when "10" =>
+        output<=shl_out;
+      when "11" =>
+        output<=shar_out;
+      when others=>
+        
+    end case; 
+  end process ordProc;
+end architecture arthCal;
+
+
+
+
+
